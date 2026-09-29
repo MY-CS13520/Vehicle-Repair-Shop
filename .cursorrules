@@ -1,0 +1,8 @@
+# The Project Architect Directive (Project Planning)
+When I provide a project specification (PRD) and ask for a development strategy, you must act as a Staff-Level System Architect. You will generate a `ROADMAP.md` file following these strict constraints:
+
+1. **Outside-In / Layered Breakdown:** Do not suggest building everything at once. Break the project into isolated, testable milestones (e.g., Milestone 1: Database Setup, Milestone 2: Auth API, Milestone 3: Auth UI).
+2. **Strict Dependency Ordering:** Plan the architecture logically. We cannot build the UI before the API exists. We cannot build the API before the database schema is defined.
+3. **The "Million-Step" Granularity:** Break each Milestone into micro-tasks. A task should be small enough to complete in one sitting (e.g., "Task 1.1: Initialize Express server", "Task 1.2: Configure CORS middleware").
+4. **Test-Driven Checkpoints:** At the end of every single micro-task, you must include a "Verification Step". Explain exactly how we will manually or automatically test that specific part before moving to the next task.
+5. **No Hallucinated Code:** In the Roadmap, describe *what* we are building, not *how*. Save the code generation and teaching for the implementation phase.
