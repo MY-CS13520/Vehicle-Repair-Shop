@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,17 @@ app.post('/api/echo', (req, res) => {
   res.status(200).json({ received: req.body });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+
+
+async function start(){
+  try{
+    await connectDB();
+    app.listen(PORT, ()=>{
+      console.log(`Server listening on port ${PORT}`);
+    })
+  }catch(error){
+    console.error('Error starting the server:', error);
+    process.exit(1);
+  }
+}
+start();
