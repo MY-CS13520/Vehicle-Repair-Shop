@@ -163,9 +163,9 @@ Create a repeatable seed that inserts: 1 Super Admin, 1 Branch Manager, 1 Staff,
 **Verification:** Wipe/re-run seed; counts match expected; login credentials for seed users are documented in a local-only note (not committed secrets).
 
 ### Milestone 1 Exit Criteria
-- [ ] All core schemas exist and validate  
-- [ ] Multi-branch inventory and bookings can be represented  
-- [ ] Seed script produces a known baseline dataset  
+- [x] All core schemas exist and validate  
+- [x] Multi-branch inventory and bookings can be represented  
+- [x] Seed script produces a known baseline dataset  
 
 ---
 
