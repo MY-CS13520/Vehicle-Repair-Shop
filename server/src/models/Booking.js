@@ -56,5 +56,9 @@ const bookingSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+bookingSchema.index({ branch: 1, scheduledStart: 1})
+bookingSchema.index({customer: 1})
+bookingSchema.index({status: 1})
+
 module.exports = mongoose.model('Booking', bookingSchema)
 module.exports.BOOKING_STATUS = BOOKING_STATUS

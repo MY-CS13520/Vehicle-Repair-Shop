@@ -29,4 +29,7 @@ const branchSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+
+branchSchema.index({region: 1})
+branchSchema.index({region: 1, isActive: 1})
 module.exports = mongoose.model('Branch', branchSchema)

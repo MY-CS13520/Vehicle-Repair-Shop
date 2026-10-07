@@ -38,5 +38,7 @@ const InventoryitemSchema = new mongoose.Schema(
     {timestamps: true}
 )
 InventoryitemSchema.index({sku: 1, branch: 1}, {unique: true})
+InventoryitemSchema.index({branch: 1, quantity: 1})
+
 
 module.exports = mongoose.model('Inventoryitem', InventoryitemSchema)
