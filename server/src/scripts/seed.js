@@ -4,6 +4,7 @@ const connectDB = require('../config/db')
 const User = require('../models/User')
 const Branch = require('../models/Branch')
 const ServiceType = require('../models/ServiceType')
+const {hashPassword} = require('../utils/password')
 
 async function seed(){
     try{
@@ -46,17 +47,17 @@ async function seed(){
             contact: { phone: '0811111111', email: 'kandy@seed.local'},
             isActive: true,
         })
-
+        const seedPasswordHash = await hashPassword('SeedPass123!')
         const admin = await User.create({
             email: 'admin@seed.local',
-            passwordHash: 'SEED_HASH_ONLY_NOT_REAL',
+            passwordHash: seedPasswordHash,
             name: 'Seed Super Admin',
             role: 'SuperAdmin',
         })
 
         const manager = await User.create({
             email: 'manager@seed.local',
-            passwordHash: 'SEED_HASH_ONLY_NOT_REAL',
+            passwordHash: seedPasswordHash,
             name: 'Seed Branch Manager',
             role: 'BranchManager',
             branch: colombo._id,
@@ -64,7 +65,7 @@ async function seed(){
 
         const staff = await User.create({
             email: 'staff@seed.local',
-            passwordHash: 'SEED_HASH_ONLY_NOT_REAL',
+            passwordHash: seedPasswordHash,
             name: 'Seed Staff',
             role: 'Staff',
             branch: colombo._id,
@@ -72,7 +73,7 @@ async function seed(){
 
         const customer = await User.create({
             email: 'customer@seed.local',
-            passwordHash: 'SEED_HASH_ONLY_NOT_REAL',
+            passwordHash: seedPasswordHash,
             name: 'Seed Customer',
             role: 'Customer',
         })
