@@ -210,9 +210,9 @@ List every auth endpoint, roles allowed, and sample requests for Postman/Insomni
 **Verification:** Walk the checklist once; all rows pass.
 
 ### Milestone 2 Exit Criteria
-- [ ] Register, login, `/me`, role guards work  
-- [ ] Seed Super Admin can create staff users  
-- [ ] No plaintext passwords in DB  
+- [x] Register, login, `/me`, role guards work  
+- [x] Seed Super Admin can create staff users  
+- [x] No plaintext passwords in DB  
 
 ---
 
