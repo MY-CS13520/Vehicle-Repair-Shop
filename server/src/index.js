@@ -5,6 +5,8 @@ const cors = require('cors');
 const connectDB = require('./config/db')
 const authRoutes = require('./routes/auth')
 const meRoutes = require('./routes/me')
+const { requireAuth, requireRole} = require('./middleware/auth')
+const userRoutes = require('./routes/users')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +16,7 @@ app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 app.use('/api/auth', authRoutes)
 app.use('/api', meRoutes)
+app.use('/api/users', userRoutes)
 
 app.get('/', (_req, res) => {
   res.send('Vehicle Repair Shop API is running');
@@ -29,6 +32,15 @@ app.get('/api/health', (_req, res) => {
 app.post('/api/echo', (req, res) => {
   res.status(200).json({ received: req.body });
 });
+
+app.get(
+  '/api/admin/ping',
+  requireAuth,
+  requireRole('SuperAdmin'),
+  (_req, res) => {
+    res.status(200).json({ ok: true})
+  }
+)
 
 
 
