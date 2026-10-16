@@ -1,6 +1,7 @@
 const express = require('express')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
+const { toPublicUser} = require('../utils/user')
 
 const { hashPassword, verifyPassword} = require('../utils/password')
 
@@ -14,16 +15,7 @@ function signToken(user){
     )
 }
 
-function toPublicUser(user){
-    return{
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        phone: user.phone,
-        role: user.role,
-        branch: user.branch || null,
-    }
-}
+
 
 router.post('/register', async (req, res) => {
     try{

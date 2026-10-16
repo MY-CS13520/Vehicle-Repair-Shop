@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db')
 const authRoutes = require('./routes/auth')
+const meRoutes = require('./routes/me')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +13,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 app.use('/api/auth', authRoutes)
+app.use('/api', meRoutes)
 
 app.get('/', (_req, res) => {
   res.send('Vehicle Repair Shop API is running');
