@@ -1,23 +1,28 @@
-import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import ProtectedHomePage from './pages/ProtectedHomePage'
 import './App.css'
-import { API_BASE_URL} from './config'
 
 function App() {
-  const [health,setHealth] = useState('Loading...')
-
-  useEffect(() =>{
-    fetch(`${API_BASE_URL}/api/health`)
-    .then((res) => res.json())
-    .then((data) => setHealth(JSON.stringify(data)))
-    .catch(() => setHealth('Failed to reach API'))
-  }, [])
   return (
-    <main>
-      <h1>Vehicle Repair Shop</h1>
-      <p>Management System</p>
-      <p>API: {API_BASE_URL}</p>
-      <p>Health: {health}</p>
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <ProtectedHomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/app" replace />} />
+        <Route path="*" element={<Navigate to="/app" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
