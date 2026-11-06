@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './auth/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -7,22 +8,24 @@ import './App.css'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/app"
-          element={
-            <ProtectedRoute>
-              <ProtectedHomePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/" element={<Navigate to="/app" replace />} />
-        <Route path="*" element={<Navigate to="/app" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <ProtectedHomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/app" replace />} />
+          <Route path="*" element={<Navigate to="/app" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
