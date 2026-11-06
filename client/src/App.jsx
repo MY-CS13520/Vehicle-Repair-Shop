@@ -8,6 +8,7 @@ import StaffHomePage from './pages/StaffHomePage'
 import ManagerHomePage from './pages/ManagerHomePage'
 import AdminHomePage from './pages/AdminHomePage'
 import RoleRoute from './components/RoleRoute'
+import AppShell from './components/AppShell'
 import './App.css'
 
 function App() {
@@ -22,7 +23,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <RoleRoute roles={['Customer']}>
-                <CustomerHomePage /> 
+                 <AppShell>
+                  <CustomerHomePage /> 
+                 </AppShell>
                 </RoleRoute>
               </ProtectedRoute>
             }
@@ -32,7 +35,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <RoleRoute roles={['Staff']}>
-                <StaffHomePage />
+                  <AppShell>
+                    <StaffHomePage />
+                  </AppShell>
                 </RoleRoute>
               </ProtectedRoute>
             }
@@ -42,7 +47,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <RoleRoute roles={['BranchManager']}>
-                <ManagerHomePage />
+                  <AppShell>
+                    <ManagerHomePage />
+                  </AppShell>
                 </RoleRoute>
               </ProtectedRoute>
             }
@@ -52,7 +59,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <RoleRoute roles={['SuperAdmin']}>
-                <AdminHomePage />
+                  <AppShell>
+                    <AdminHomePage />
+                  </AppShell>
                 </RoleRoute>
               </ProtectedRoute>
             }

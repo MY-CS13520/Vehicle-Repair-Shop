@@ -249,8 +249,8 @@ Visible logout clears session and returns to login.
 **Verification:** After logout, back-button to protected page still blocked.
 
 ### Milestone 3 Exit Criteria
-- [ ] Full login/register/logout loop works in the browser  
-- [ ] Role redirects and nav restrictions verified for all four roles  
+- [x] Full login/register/logout loop works in the browser  
+- [x] Role redirects and nav restrictions verified for all four roles  
 
 ---
 
