@@ -12,14 +12,15 @@ const NAV_BY_ROLE = {
     ],
     BranchManager: [
         { to: '/manager', label: 'Home' },
+        { to: '/manager/branch', label: 'My Branch' },
         { to: '/manager', label: 'Branch Staff' },
         { to: '/manager', label: 'Inventory' },
     ],
     SuperAdmin: [
         { to: '/admin', label: 'Home' },
-        { to: '/admin', label: 'Branches' },
         { to: '/admin', label: 'Regions' },
         { to: '/admin', label: 'Payroll' },
+        { to: '/admin/branches', label: 'Branches' },
     ],
 }
 

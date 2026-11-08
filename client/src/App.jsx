@@ -9,6 +9,10 @@ import ManagerHomePage from './pages/ManagerHomePage'
 import AdminHomePage from './pages/AdminHomePage'
 import RoleRoute from './components/RoleRoute'
 import AppShell from './components/AppShell'
+import BranchListPage from './pages/BranchListPage'
+import BranchFormPage from './pages/BranchFormPage'
+import BranchDetailPage from './pages/BranchDetailPage'
+import ManagerBranchPage from './pages/ManagerBranchPage'
 import './App.css'
 
 function App() {
@@ -55,12 +59,72 @@ function App() {
             }
           />
           <Route
+            path="/manager/branch"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <ManagerBranchPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin"
             element={
               <ProtectedRoute>
                 <RoleRoute roles={['SuperAdmin']}>
                   <AppShell>
                     <AdminHomePage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/branches/new"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <BranchFormPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/branches/:id/edit"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <BranchFormPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/branches/:id"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <BranchDetailPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />          
+          <Route
+            path="/admin/branches"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <BranchListPage />
                   </AppShell>
                 </RoleRoute>
               </ProtectedRoute>

@@ -304,8 +304,8 @@ Read-only summary of assigned branch.
 **Verification:** Manager of A sees A only; no create-branch controls.
 
 ### Milestone 5 Exit Criteria
-- [ ] Super Admin full branch CRUD UI works  
-- [ ] Manager scoped view verified  
+- [x] Super Admin full branch CRUD UI works  
+- [x] Manager scoped view verified  
 
 ---
 
