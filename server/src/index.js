@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth')
 const meRoutes = require('./routes/me')
 const { requireAuth, requireRole} = require('./middleware/auth')
 const userRoutes = require('./routes/users')
+const branchRoutes = require('./routes/branches')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes)
 app.use('/api', meRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/branches', branchRoutes)
 
 app.get('/', (_req, res) => {
   res.send('Vehicle Repair Shop API is running');
