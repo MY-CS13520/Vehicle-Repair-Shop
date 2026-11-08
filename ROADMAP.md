@@ -279,8 +279,8 @@ Implement deactivate; avoid hard-delete if bookings exist (or block delete).
 **Verification:** Deactivated branch excluded from “active branches” list used by booking later; attempt delete when constrained returns clear error.
 
 ### Milestone 4 Exit Criteria
-- [ ] Super Admin can manage branches and filter by region  
-- [ ] Branch-scoped access helper ready for later modules  
+- [x] Super Admin can manage branches and filter by region  
+- [x] Branch-scoped access helper ready for later modules  
 
 ---
 
