@@ -16,22 +16,26 @@ const userSchema = new mongoose.Schema(
         },
 
         name:{
-            type:String,
+            type: String,
             required: true,
             trim: true,
         },
         phone:{
-            type:String,
-            trim:true,
+            type: String,
+            trim: true,
+        },
+        skills: {
+            type: [String],
+            default: [],
         },
         role:{
-            type:String,
-            enum:ROLES,
+            type: String,
+            enum: ROLES,
             rquired: true,
             default: 'Customer',
         },
         branch:{
-            type:mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Branch',
             default : null,
         },

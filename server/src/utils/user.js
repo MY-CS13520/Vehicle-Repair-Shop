@@ -6,6 +6,8 @@ function toPublicUser(user) {
         phone: user.phone,
         role: user.role,
         branch: user.branch || null,
+        isActive: user.isActive,
+        skills: user.skills || [],
     }
 }
 

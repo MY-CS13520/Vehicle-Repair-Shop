@@ -8,6 +8,8 @@ const meRoutes = require('./routes/me')
 const { requireAuth, requireRole} = require('./middleware/auth')
 const userRoutes = require('./routes/users')
 const branchRoutes = require('./routes/branches')
+const bookingRoutes = require('./routes/bookings')
+const attendanceRoutes = require('./routes/attendance')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +21,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api', meRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/branches', branchRoutes)
+app.use('/api/bookings', bookingRoutes)
+app.use('/api/attendance', attendanceRoutes)
 
 app.get('/', (_req, res) => {
   res.send('Vehicle Repair Shop API is running');
