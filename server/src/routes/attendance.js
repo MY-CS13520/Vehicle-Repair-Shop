@@ -41,6 +41,19 @@ router.get('/', requireAuth, requireRole('SuperAdmin', 'BranchManager'), async (
     }
 })
 
+router.get('/current', requireAuth, requireRole('Staff'), async (req, res) => {
+    try {
+        const open = await Attendance.findOne({
+            staff: req.user._id,
+            clockOut: null,
+        })
+        return res.status(200).json({ attendance: open })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ message: 'Server error'})
+    }
+})
+
 router.post('/clock-in', requireAuth, requireRole('Staff'), async (req, res) => {
     try {
         if (!req.user.branch) {

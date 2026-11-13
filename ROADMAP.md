@@ -339,8 +339,8 @@ Filter by staff, branch, date range.
 **Verification:** Seed two days of attendance; date filter returns expected count.
 
 ### Milestone 6 Exit Criteria
-- [ ] Branch-scoped staff CRUD/list works  
-- [ ] Assignment and attendance APIs verified  
+- [x] Branch-scoped staff CRUD/list works  
+- [x] Assignment and attendance APIs verified  
 
 ---
 
@@ -369,7 +369,7 @@ Simple clock-in/out on staff home.
 **Verification:** Date range filter matches known seed punches.
 
 ### Milestone 7 Exit Criteria
-- [ ] Staff directory, assignment, and attendance usable in browser for all relevant roles  
+- [x] Staff directory, assignment, and attendance usable in browser for all relevant roles  
 
 ---
 

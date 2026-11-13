@@ -13,6 +13,11 @@ import BranchListPage from './pages/BranchListPage'
 import BranchFormPage from './pages/BranchFormPage'
 import BranchDetailPage from './pages/BranchDetailPage'
 import ManagerBranchPage from './pages/ManagerBranchPage'
+import StaffDirectoryPage from './pages/StaffDirectoryPage'
+import StaffProfilePage from './pages/StaffProfilePage'
+import ManagerJobsPage from './pages/ManagerJobsPage'
+import ManagerJobDetailPage from './pages/ManagerJobDetailPage'
+import AttendanceReportPage from './pages/AttendanceReportPage'
 import './App.css'
 
 function App() {
@@ -71,6 +76,90 @@ function App() {
             }
           />
           <Route
+            path="/manager/staff/:id/edit"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <StaffProfilePage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/staff/:id/edit"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <StaffProfilePage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/staff"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <StaffDirectoryPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/jobs/:id"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <ManagerJobDetailPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/jobs"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <ManagerJobsPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/attendance"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['BranchManager']}>
+                  <AppShell>
+                    <AttendanceReportPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/attendance"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <AttendanceReportPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin"
             element={
               <ProtectedRoute>
@@ -89,6 +178,18 @@ function App() {
                 <RoleRoute roles={['SuperAdmin']}>
                   <AppShell>
                     <BranchFormPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/staff"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <StaffDirectoryPage />
                   </AppShell>
                 </RoleRoute>
               </ProtectedRoute>
