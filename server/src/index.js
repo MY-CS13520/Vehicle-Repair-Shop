@@ -10,6 +10,9 @@ const userRoutes = require('./routes/users')
 const branchRoutes = require('./routes/branches')
 const bookingRoutes = require('./routes/bookings')
 const attendanceRoutes = require('./routes/attendance')
+const serviceRoutes = require('./routes/services')
+const vehicleRoutes = require('./routes/vehicles')
+const slotRoutes = require('./routes/slots')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +26,9 @@ app.use('/api/users', userRoutes)
 app.use('/api/branches', branchRoutes)
 app.use('/api/bookings', bookingRoutes)
 app.use('/api/attendance', attendanceRoutes)
+app.use('/api/services', serviceRoutes)
+app.use('/api/vehicles', vehicleRoutes)
+app.use('/api/slots', slotRoutes)
 
 app.get('/', (_req, res) => {
   res.send('Vehicle Repair Shop API is running');

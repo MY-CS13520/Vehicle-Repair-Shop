@@ -406,7 +406,7 @@ Endpoint returning current status + timeline for customer tracking.
 **Verification:** After manual status tweak in DB/API, customer tracking payload updates.
 
 ### Milestone 8 Exit Criteria
-- [ ] Catalog + vehicles + slot booking + scoped lists all pass conflict tests  
+- [x] Catalog + vehicles + slot booking + scoped lists all pass conflict tests  
 
 ---
 
