@@ -52,7 +52,7 @@ function ManagerJobsPage() {
             <tbody>
               {bookings.map((b) => (
                 <tr key={b._id}>
-                  <td>{b.notes || '—'}</td>
+                  <td>{b.scheduledStart ? String(b.scheduledStart) : '—'}</td>
                   <td>{b.status}</td>
                   <td>{b.assignedStaff ? String(b.assignedStaff) : 'Unassigned'}</td>
                   <td>

@@ -82,4 +82,24 @@ router.patch('/:id', requireAuth, requireRole('Customer'), async (req, res) => {
     }
 })
 
+router.delete('/:id', requireAuth, requireRole('Customer'), async (req, res) => {
+    try {
+      const vehicle = await Vehicle.findById(req.params.id)
+      if (!vehicle) {
+        return res.status(404).json({ message: 'Vehicle not found' })
+      }
+      if (String(vehicle.customer) !== String(req.user._id)) {
+        return res.status(403).json({ message: 'Forbidden' })
+      }
+      await vehicle.deleteOne()
+      return res.status(200).json({ ok: true })
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return res.status(404).json({ message: 'Vehicle not found' })
+      }
+      console.error(err)
+      return res.status(500).json({ message: 'Server error' })
+    }
+  })
+
 module.exports = router

@@ -4,11 +4,14 @@ import { useAuth } from '../auth/AuthContext'
 const NAV_BY_ROLE = {
     Customer: [
         { to: '/customer', label: 'Home' },
-        { to: '/customer', label: 'My Bookings' },
+        { to: '/customer/bookings', label: 'My Bookings' },
+        { to: '/customer/services', label: 'Services' },
+        { to: '/customer/vehicles', label: 'Vehicles' },
+        { to: '/customer/book', label: 'Book' },
     ],
     Staff: [
         { to: '/staff', label: 'Home' },
-        { to: '/staff', label: 'My Jobs' },
+        { to: '/staff/jobs', label: 'My Jobs' },
     ],
     BranchManager: [
         { to: '/manager', label: 'Home' },
@@ -25,6 +28,7 @@ const NAV_BY_ROLE = {
         { to: '/admin/branches', label: 'Branches' },
         { to: '/admin/staff', label: 'Staff' },
         { to: '/admin/attendance', label: 'Attendance' },
+        { to: '/admin/bookings', label: 'Bookings' },
     ],
 }
 

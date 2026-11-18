@@ -31,11 +31,15 @@ router.post('/', requireAuth, requireRole('SuperAdmin'), async (req, res) => {
     }
 })
 
-router.get('/', requireAuth, requireRole('SuperAdmin'), async (req, res) =>{
+router.get('/', requireAuth, async (req, res) =>{
     try {
         const filter = {}
         if (req.query.region) {
             filter.region = String(req.query.region).trim()
+        } else {
+            if (req.query.region) {
+                filter.region = String(req.query.region).trim()
+            }
         }
 
         if (req.query.isActive !== undefined) {

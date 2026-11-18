@@ -433,8 +433,8 @@ Endpoint returning current status + timeline for customer tracking.
 **Verification:** Filter by region/branch returns correct subset.
 
 ### Milestone 9 Exit Criteria
-- [ ] Full customer booking path works against live API  
-- [ ] Role-scoped queues verified  
+- [x] Full customer booking path works against live API  
+- [x] Role-scoped queues verified  
 
 ---
 

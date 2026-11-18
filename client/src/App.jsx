@@ -18,6 +18,13 @@ import StaffProfilePage from './pages/StaffProfilePage'
 import ManagerJobsPage from './pages/ManagerJobsPage'
 import ManagerJobDetailPage from './pages/ManagerJobDetailPage'
 import AttendanceReportPage from './pages/AttendanceReportPage'
+import ServiceCatalogPage from './pages/ServiceCatalogPage'
+import VehicleManagerPage from './pages/VehicleManagerPage'
+import BookingWizardPage from './pages/BookingWizardPage'
+import MyBookingsPage from './pages/MyBookingsPage'
+import BookingDetailPage from './pages/BookingDetailPage'
+import StaffJobsPage from './pages/StaffJobsPage'
+import AdminBookingsPage from './pages/AdminBookingsPage'
 import './App.css'
 
 function App() {
@@ -40,6 +47,66 @@ function App() {
             }
           />
           <Route
+            path="/customer/services"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['Customer']}>
+                  <AppShell>
+                    <ServiceCatalogPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/vehicles"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['Customer']}>
+                  <AppShell>
+                    <VehicleManagerPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/book"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['Customer']}>
+                  <AppShell>
+                    <BookingWizardPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/bookings/:id"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['Customer']}>
+                  <AppShell>
+                    <BookingDetailPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/bookings"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['Customer']}>
+                  <AppShell>
+                    <MyBookingsPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/staff"
             element={
               <ProtectedRoute>
@@ -50,6 +117,18 @@ function App() {
                 </RoleRoute>
               </ProtectedRoute>
             }
+          />
+          <Route
+              path="/staff/jobs"
+              element={
+                <ProtectedRoute>
+                  <RoleRoute roles={['Staff']}>
+                    <AppShell>
+                      <StaffJobsPage />
+                    </AppShell>
+                  </RoleRoute>
+                </ProtectedRoute>
+              }
           />
           <Route
             path="/manager"
@@ -218,7 +297,19 @@ function App() {
                 </RoleRoute>
               </ProtectedRoute>
             }
-          />          
+          /> 
+          <Route
+            path="/admin/bookings"
+            element={
+              <ProtectedRoute>
+                <RoleRoute roles={['SuperAdmin']}>
+                  <AppShell>
+                    <AdminBookingsPage />
+                  </AppShell>
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />         
           <Route
             path="/admin/branches"
             element={
