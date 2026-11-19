@@ -69,6 +69,10 @@ const workOrderSchema = new mongoose.Schema(
             trim: true,
             default: '',
         },
+        paymentEligible: {
+            type: Boolean,
+            default: false,
+        },
         assignedStaff: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',

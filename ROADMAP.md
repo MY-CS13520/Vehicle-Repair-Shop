@@ -465,7 +465,7 @@ Returns sanitized status timeline.
 **Verification:** Customer sees statuses; internal staff-only notes hidden if required.
 
 ### Milestone 10 Exit Criteria
-- [ ] Status machine + history + completion gate for payments verified  
+- [x] Status machine + history + completion gate for payments verified  
 
 ---
 

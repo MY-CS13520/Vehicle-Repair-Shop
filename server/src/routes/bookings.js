@@ -6,6 +6,7 @@ const ServiceType = require('../models/ServiceType')
 const Branch = require('../models/Branch')
 const { requireAuth, requireRole } = require('../middleware/auth')
 const { canAccessBranch } = require('../utils/branchAccess')
+const WorkOrder = require('../models/WorkOrder')
 
 const router = express.Router()
 
@@ -128,11 +129,20 @@ router.get(
             if (!canTrackBooking(req.user, booking)) {
                 return res.status(403).json({ message: 'Forbidden' })
             }
+            
+            const workOrder = await WorkOrder.findOne({ booking: booking._id })
 
             const timeline = [
                 { status: 'Pending', at: booking.createdAt },
             ]
-            if (booking.status !== 'Pending') {
+            if (workOrder) {
+                for (const h of workOrder.statusHistory) {
+                    timeline.push({
+                        status: h.status,
+                        at: h.changedAt,
+                    })
+                }
+            }else if (booking.status !== 'Pending') {
                 timeline.push({ status: booking.status, at: booking.updatedAt })
             }
 
@@ -143,6 +153,9 @@ router.get(
                     scheduledStart: booking.scheduledStart,
                     scheduledEnd: booking.scheduledEnd,
                     timeline,
+                    paymentEligible: workOrder
+                        ? Boolean(workOrder.paymentEligible)
+                        :false,
                 },
             })
         } catch (err) {
@@ -350,4 +363,321 @@ async (req, res) => {
         return res.status(500).json({ message: 'Server errror' })
     }
 })
+
+router.post(
+    '/:id/work-order',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+        try {
+            const booking = await Booking.findById(req.params.id)
+            if (!booking) {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            if (!canAccessBranch(req.user, booking.branch)) {
+                return res.status(403).json({ message: 'Forbidden' })
+            }
+            if (booking.status !== 'Confirmed') {
+                return res.status(400).json({ message: 'Booking must be confirmed' })
+            }
+
+            const existing = await WorkOrder.findOne({ booking: booking._id })
+            if (existing) {
+                return res.status(409).json({ message: 'workorder already exists' })
+            }
+
+            const workOrder = await WorkOrder.create({
+                booking: booking._id,
+                assignedStaff: booking.assignedStaff,
+                status: 'InProgress',
+                statusHistory: [
+                    { status: 'Open', note: 'Work order opened from booking' },
+                    { status: 'InProgress', note: 'Repair started' },
+                ],
+            })
+
+            booking.status = 'In Progress'
+            await booking.save()
+
+            return res.status(201).json({ workOrder, booking })
+        } catch (err) {
+            if (err.code === 11000) {
+                return res.status(409).json({ message: 'Work order already exists' })
+            }
+            if (err.name === 'CastError') {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            console.error(err)
+            return res.status(500).json({ message: 'Server error' })
+        }
+    }
+)
+
+const WORK_ORDER_NEXT = {
+    Open: ['InProgress', 'Cancelled'],
+    InProgress: ['WaitingParts', 'Completed', 'Cancelled'],
+    WaitingParts: ['InProgress', 'Completed', 'Cancelled'],
+    Completed: [],
+    Cancelled: [],
+}
+
+function canUpdateWorkOrder(user, booking) {
+    if (user.role === 'SuperAdmin') return true
+    if (user.role === 'BranchManager') {
+        return canAccessBranch(user, booking.branch)
+    }
+    if (user.role === 'Staff') {
+        return (
+            booking.assignedStaff &&
+            String(booking.assignedStaff) === String(user._id)
+        )
+    }
+    return false
+}
+
+router.get(
+    '/:id/work-order',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+        try {
+            const booking = await Booking.findById(req.params.id)
+            if (!booking) {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            if (!canAccessBranch(req.user, booking.branch)) {
+                return res.status(403).json({ message: 'Forbidden' })
+            }
+            const workOrder = await WorkOrder.findOne({ booking: booking._id })
+            if (!workOrder) {
+                return res.status(404).json({ message: 'work order not found' })
+            }
+            return res.status(200).json({ workOrder })
+        } catch (err) {
+            if (err.name === 'CastError') {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            console.error(err)
+            return res.status(500).json({ message: 'Server error' })
+        }
+    }
+)
+
+router.patch(
+    '/:id/work-order/status',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+        try {
+            const { status, note } = req.body
+            if (!status) {
+                return res.status(400).json({ message: 'Status is required' })
+            }
+
+            const booking = await Booking.findById(req.params.id)
+            if (!booking) {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            if (!canUpdateWorkOrder(req.user, booking)) {
+                return res.status(403).json({ message: 'Forbidden' })
+            }
+
+            const workOrder = await WorkOrder.findOne({ booking: booking._id })
+            if (!workOrder) {
+                return res.status(404).json({ message: 'Work order not found'  })
+            }
+
+            const allowed = WORK_ORDER_NEXT[workOrder.status] || []
+            if (!allowed.includes(status)) {
+                return res.status(400).json({ message: 'Illegal transition' })
+            }
+
+            workOrder.status = status
+            workOrder.statusHistory.push({ status, note })
+            await workOrder.save()
+
+            if (status === 'Completed') {
+                booking.status = 'Completed'
+                await booking.save()
+              } else if (status === 'Cancelled') {
+                booking.status = 'Cancelled'
+                await booking.save()
+              }
+              
+              return res.status(200).json({ workOrder, booking })
+        } catch (err) {
+            if (err.name === 'ValidationError') {
+                return res.status(400).json({ message: 'Invalid status' })
+              }
+              if (err.name === 'CastError') {
+                return res.status(404).json({ message: 'Booking not found' })
+              }
+              console.error(err)
+              return res.status(500).json({ message: 'Server error' })            
+        }
+    }
+)
+
+router.patch(
+    '/:id/work-order/notes',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+      try {
+        const { labourNotes } = req.body
+        if (labourNotes === undefined) {
+          return res.status(400).json({ message: 'labourNotes is required' })
+        }
+  
+        const booking = await Booking.findById(req.params.id)
+        if (!booking) {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        if (!canUpdateWorkOrder(req.user, booking)) {
+          return res.status(403).json({ message: 'Forbidden' })
+        }
+  
+        const workOrder = await WorkOrder.findOne({ booking: booking._id })
+        if (!workOrder) {
+          return res.status(404).json({ message: 'Work order not found' })
+        }
+  
+        workOrder.labourNotes = labourNotes
+        await workOrder.save()
+        return res.status(200).json({ workOrder })
+      } catch (err) {
+        if (err.name === 'CastError') {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        console.error(err)
+        return res.status(500).json({ message: 'Server error' })
+      }
+    }
+  )
+
+router.patch(
+    '/:id/work-order/parts',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+        try {
+            const { name, sku, quantity } = req.body
+            if (!name) {
+                return res.status(400).json({ message: 'name is required' })
+            }
+
+            const booking = await Booking.findById(req.params.id)
+            if (!booking) {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            if (!canUpdateWorkOrder(req.user, booking)) {
+                return res.status(403).json({ message: 'Forbidden' })
+            }
+
+            const workOrder = await WorkOrder.findOne({ booking: booking._id })
+            if (!workOrder) {
+                return res.status(404).json({ message: 'work order not found' })
+            }
+
+            workOrder.partsUsed.push({
+                name,
+                sku,
+                qunatity: quantity || 1,
+            })
+            await workOrder.save()
+            return res.status(200).json({ workOrder })
+        } catch (err) {
+            if (err.name === 'ValidationError') {
+                return res.status(400).json({ message: 'Invalid parts line' })
+            }
+            if (err.name === 'CastError') {
+                return res.status(404).json({ message: 'Booking not found' })
+            }
+            console.error(err)
+            return res.status(500).json({ message: 'Server error' })
+        }
+    }
+)
+
+router.post(
+    '/:id/work-order/complete',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager', 'Staff'),
+    async (req, res) => {
+      try {
+        const booking = await Booking.findById(req.params.id)
+        if (!booking) {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        if (!canUpdateWorkOrder(req.user, booking)) {
+          return res.status(403).json({ message: 'Forbidden' })
+        }
+  
+        const workOrder = await WorkOrder.findOne({ booking: booking._id })
+        if (!workOrder) {
+          return res.status(404).json({ message: 'Work order not found' })
+        }
+  
+        const allowed = WORK_ORDER_NEXT[workOrder.status] || []
+        if (!allowed.includes('Completed')) {
+          return res.status(400).json({ message: 'Illegal transition' })
+        }
+  
+        workOrder.status = 'Completed'
+        workOrder.paymentEligible = true
+        workOrder.statusHistory.push({
+          status: 'Completed',
+          note: 'Repair completed',
+        })
+        await workOrder.save()
+  
+        booking.status = 'Completed'
+        await booking.save()
+  
+        return res.status(200).json({ workOrder, booking })
+      } catch (err) {
+        if (err.name === 'CastError') {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        console.error(err)
+        return res.status(500).json({ message: 'Server error' })
+      }
+    }
+  )
+  
+  router.patch(
+    '/:id/work-order/payable',
+    requireAuth,
+    requireRole('SuperAdmin', 'BranchManager'),
+    async (req, res) => {
+      try {
+        const booking = await Booking.findById(req.params.id)
+        if (!booking) {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        if (!canAccessBranch(req.user, booking.branch)) {
+          return res.status(403).json({ message: 'Forbidden' })
+        }
+  
+        const workOrder = await WorkOrder.findOne({ booking: booking._id })
+        if (!workOrder) {
+          return res.status(404).json({ message: 'Work order not found' })
+        }
+        if (workOrder.status !== 'Completed') {
+          return res.status(400).json({ message: 'Not payable until completed' })
+        }
+  
+        workOrder.paymentEligible = true
+        await workOrder.save()
+        return res.status(200).json({ workOrder })
+      } catch (err) {
+        if (err.name === 'CastError') {
+          return res.status(404).json({ message: 'Booking not found' })
+        }
+        console.error(err)
+        return res.status(500).json({ message: 'Server error' })
+      }
+    }
+  )
+
 module.exports = router
